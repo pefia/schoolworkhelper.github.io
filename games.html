@@ -8,55 +8,102 @@
     <!-- External CSS styles -->
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Custom styles for rounded buttons and task hover effect */
-        .button {
-            border-radius: 20px;
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(150deg,#0f172a,#0b1222 45%,#1f2937 100%);
+            color: #f8fafc;
+            min-height: 100vh;
         }
 
-        .button:hover {
-            background-color: #ccc;
+        header, main {
+            width: min(1100px, 95%);
+            margin: auto;
+        }
+
+        header h3 {
+            font-size: 1.3rem;
+            margin-top: 0.5rem;
+            color: #e2e8f0;
+        }
+
+        .games {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(110px,1fr));
+            gap: 0.9rem;
+            justify-items: center;
+            padding: 0.5rem;
         }
 
         .gamebutton {
-            border-radius: 10px;
+            border-radius: 14px;
             overflow: hidden;
-            margin: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s, box-shadow 0.3s;
+            width: 110px;
+            height: 110px;
+            box-shadow: 0 3px 18px rgba(0, 0, 0, 0.4);
+            transition: transform .25s ease, box-shadow .25s ease;
+            background: #111827;
+            border: 1px solid rgba(148,163,184,0.2);
+            display: inline-block;
         }
 
         .gamebutton:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            transform: translateY(-4px) scale(1.04);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6);
         }
 
-        /* CSS class for rainbow strobe effect */
+        .gamebutton img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .button, .contactbutton {
+            border-radius: 20px;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: 1px solid rgba(148,163,184,0.3);
+            background: rgba(148,163,184,0.15);
+            color: #eef2ff;
+        }
+
+        .button:hover, .contactbutton:hover {
+            background-color: rgba(148,163,184,0.35);
+        }
+
+        .homework-section h1, .due-tasks-section h1, .privacy-section h1, .contact-section h1 {
+            margin-bottom: 0.5rem;
+            color: #e2e8f0;
+            font-size: 1.25rem;
+        }
+
+        .gamebutton span {
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            text-align: center;
+        }
+
+        .login-section, .privacy-section, .contact-section {
+            background: rgba(15,23,42,0.4);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid rgba(148,163,184,0.2);
+        }
+
         .rainbow-background {
             animation: rainbow 0.5s infinite;
         }
 
         @keyframes rainbow {
-            0% {
-                background-color: red;
-            }
-            20% {
-                background-color: orange;
-            }
-            40% {
-                background-color: yellow;
-            }
-            60% {
-                background-color: green;
-            }
-            80% {
-                background-color: blue;
-            }
-            100% {
-                background-color: purple;
-            }
+            0% { background-color: #ff4242; }
+            20% { background-color: #ffa500; }
+            40% { background-color: #ffea00; }
+            60% { background-color: #29a329; }
+            80% { background-color: #3f51b5; }
+            100% { background-color: #9c27b0; }
         }
     </style>
 </head>
@@ -90,14 +137,14 @@
                 <a class="gamebutton" href="typr/typr.html"><img src="typr/icon.png"></a>
                 <a class="gamebutton" href="f1/index.html"><img src="f1/icon.png"></a>
                 <a class="gamebutton" href="wlfjs/index.html"><img src="wlfjs/icon.png"></a>
-                <a class="gamebutton" href="gtwyshtut/index.html"><img src="gtwyshtut/icon.png"></a>
+                <!-- Removed Getaway Shootout/gtwyshtut per request -->
                 <a class="gamebutton" href="tptptp/index.html"><img src="tptptp/icon.png"></a>
                 <a class="gamebutton" href="stckmnhk/index.html"><img src="stckmnhk/icon.jpg"></a>
                 <a class="gamebutton" href="flpybrd/index.html"><img src="flpybrd/icon.png"></a>
                 <a class="gamebutton" href="chrdno/index.html"><img src="chrdno/icon.png"></a>
                 <a class="gamebutton" href="stck/index.html"><img src="stck/icon.png"></a>
                 <a class="gamebutton" href="wdl/index.html"><img src="wdl/icon.png"></a>
-                <a class="gamebutton" href="cc/index.html"><img src="cc/icon.png"></a>
+                <!-- Removed cc per request -->
                 <a class="gamebutton" href="rlyvtx/index.html"><img src="rlyvtx/icon.png"></a>
                 <a class="gamebutton" href="tnyfsh/index.html"><img src="tnyfsh/icon.png"></a>
                 <a class="gamebutton" href="egycr/index.html"><img src="egycr/icon.png"></a>
@@ -115,7 +162,7 @@
                 <a class="gamebutton" href="rtbwl/index.html"><img src="rtbwl/icon.png"></a>
                 <a class="gamebutton" href="trts/index.html"><img src="trts/icon.png"></a>
                 <a class="gamebutton" href="chtwntftet/couch/index.html"><img src="chtwntftet/icon.jpg"></a>
-                <a class="gamebutton" href="cloak/index.html"><img src="cloak.png"></a>
+                <!-- Removed cloak browser per request -->
             </div>
         </section>
 
