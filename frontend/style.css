@@ -1,0 +1,8 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: Arial, sans-serif; }
+.topbar { display: flex; align-items: center; padding: 8px; background: #222; color: white; }
+#urlInput { flex: 1; border: 1px solid #444; border-radius: 4px; padding: 8px; margin-right: 8px; background: #111; color: white; }
+#urlInput::placeholder { color: #888; }
+#goBtn { padding: 8px 14px; border: none; border-radius: 4px; background: #08f; color: #fff; cursor: pointer; }
+#viewport { position: absolute; top: 44px; left: 0; right: 0; bottom: 0; overflow: auto; background: #fafafa; padding: 10px; }
+#error { color: #b00; font-weight: bold; }
