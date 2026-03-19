@@ -1,5 +1,5 @@
 const appBasePath = '/app';
-const API_BASE = 'http://192.168.0.42:3000'; // change to your Pi backend IP/port
+const API_BASE = 'https://f7d9-2a02-c7c-5b74-0-dea6-32ff-fe2a-46bb.ngrok-free.app'; // change to your Pi backend IP/port
 let currentSession = null;
 let currentTargetBaseUrl = null;
 
