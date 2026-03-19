@@ -1,4 +1,5 @@
 const appBasePath = '/app';
+const API_BASE = 'http://192.168.0.42:3000'; // change to your Pi backend IP/port
 let currentSession = null;
 let currentTargetBaseUrl = null;
 
@@ -15,7 +16,7 @@ function normalizeUrl(input) {
 }
 
 async function createSession(targetUrl) {
-  const res = await fetch('/api/create-session', {
+  const res = await fetch(`${API_BASE}/api/create-session`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ url: targetUrl }),
@@ -30,7 +31,7 @@ async function loadProxiedPath(session, path, pushHistory = true) {
   const viewport = document.getElementById('viewport');
   try {
     const encoded = encodeURIComponent(path);
-    const res = await fetch(`/proxy?session=${encodeURIComponent(session)}&path=${encoded}`);
+    const res = await fetch(`${API_BASE}/proxy?session=${encodeURIComponent(session)}&path=${encoded}`);
     if (!res.ok) {
       const msg = await res.text();
       viewport.innerHTML = `<div id="error">Proxy error ${res.status}: ${escapeHtml(msg)}</div>`;
@@ -96,7 +97,7 @@ async function handleFormSubmit(event) {
   const payload = new URLSearchParams();
   data.forEach((v,k)=>payload.append(k,v));
 
-  const res = await fetch(`/proxy-form?session=${encodeURIComponent(currentSession)}&path=${encodeURIComponent(path)}`, {
+  const res = await fetch(`${API_BASE}/proxy-form?session=${encodeURIComponent(currentSession)}&path=${encodeURIComponent(path)}`, {
     method: 'POST',
     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
     body: payload.toString(),
