@@ -1,36 +1,3 @@
-// Function to authenticate using KeyAuth
-function authenticateKeyAuth(key) {
-    const keyAuth = new KeyAuthApp(
-        "00", // Application Name
-        "8DC21M410X", // Owner ID
-        "298697a312e8bf6be4b184aa68953323e3c36f2deb0d49d0459e842a2eb29730", // Application Secret
-        "1.0", // Application Version
-    );
-
-    keyAuth.verify(key)
-        .then(response => {
-            if (response.status === 'success') {
-                // Key is valid, redirect to games.html
-                window.location.href = "games.html";
-            } else {
-                // Key is invalid, display error message
-                document.getElementById("error-msg").style.display = "block";
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-}
-
-// Function to handle authentication button click
-function authenticate() {
-    // Get the entered key
-    var enteredKey = document.getElementById("key-input").value.trim();
-    
-    // Authenticate using KeyAuth
-    authenticateKeyAuth(enteredKey);
-}
-
 // Function to set the title
 function setTitle() {
     var title = document.getElementById('title').value;
@@ -50,7 +17,7 @@ function reset() {
     localStorage.removeItem('title');
     localStorage.removeItem('icon');
     setIcoLink('favicon.png');
-    document.title = 'VLE Login';
+    document.title = 'Tasks - Cranmore VLE - Oracle';
 }
 
 // Function to set the icon link
@@ -75,3 +42,11 @@ btnIcon.addEventListener("click", setIcon);
 // Event listener for resetting
 var btnReset = document.getElementById("btnReset");
 btnReset.addEventListener("click", reset);
+
+// Restore saved title/icon on page load
+(function () {
+    var savedTitle = localStorage.getItem('title');
+    var savedIcon  = localStorage.getItem('icon');
+    if (savedTitle) document.title = savedTitle;
+    if (savedIcon)  setIcoLink(savedIcon);
+})();

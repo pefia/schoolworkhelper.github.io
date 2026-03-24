@@ -39,12 +39,15 @@
             border-radius: 14px;
             overflow: hidden;
             width: 110px;
-            height: 110px;
             box-shadow: 0 3px 18px rgba(0, 0, 0, 0.4);
             transition: transform .25s ease, box-shadow .25s ease;
             background: #111827;
             border: 1px solid rgba(148,163,184,0.2);
-            display: inline-block;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
         }
 
         .gamebutton:hover {
@@ -53,10 +56,20 @@
         }
 
         .gamebutton img {
-            width: 100%;
-            height: 100%;
+            width: 110px;
+            height: 110px;
             object-fit: cover;
             display: block;
+            flex-shrink: 0;
+        }
+
+        .gamebutton .game-label {
+            font-size: 0.72rem;
+            color: #cbd5e1;
+            text-align: center;
+            padding: 4px 6px 6px;
+            line-height: 1.2;
+            word-break: break-word;
         }
 
         .button, .contactbutton {
@@ -73,19 +86,13 @@
             background-color: rgba(148,163,184,0.35);
         }
 
-        .homework-section h1, .due-tasks-section h1, .privacy-section h1, .contact-section h1 {
+        .homework-section h1, .due-tasks-section h1, .privacy-section h1, .contact-section h1, .notes-section h1 {
             margin-bottom: 0.5rem;
             color: #e2e8f0;
             font-size: 1.25rem;
         }
 
-        .gamebutton span {
-            font-size: 0.8rem;
-            color: #cbd5e1;
-            text-align: center;
-        }
-
-        .login-section, .privacy-section, .contact-section {
+        .login-section, .privacy-section, .contact-section, .notes-section {
             background: rgba(15,23,42,0.4);
             border-radius: 12px;
             padding: 1rem;
@@ -129,9 +136,123 @@
             border-radius: 6px;
             height: 28px;
         }
+
+        /* Search bar */
+        .search-bar {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0.55rem 1rem;
+            border-radius: 20px;
+            border: 1px solid rgba(148,163,184,0.3);
+            background: rgba(15,23,42,0.6);
+            color: #f1f5f9;
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-bar:focus {
+            border-color: rgba(148,163,184,0.7);
+        }
+        .search-bar::placeholder { color: #64748b; }
+
+        /* Hidden game tile */
+        .gamebutton.hidden { display: none; }
+
+        /* Iframe overlay */
+        #game-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #000;
+            flex-direction: column;
+        }
+        #game-overlay.open { display: flex; }
+
+        #overlay-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.4rem 0.8rem;
+            background: #0f172a;
+            border-bottom: 1px solid rgba(148,163,184,0.2);
+            flex-shrink: 0;
+        }
+        #overlay-topbar span {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+        #overlay-close {
+            background: rgba(148,163,184,0.15);
+            border: 1px solid rgba(148,163,184,0.3);
+            color: #f1f5f9;
+            border-radius: 8px;
+            padding: 4px 14px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+        #overlay-close:hover { background: rgba(239,68,68,0.5); }
+
+        #game-frame {
+            flex: 1;
+            width: 100%;
+            border: none;
+        }
+
+        /* Quick Notes */
+        .fav-star {
+            position: absolute;
+            top: 4px;
+            right: 5px;
+            font-size: 1rem;
+            line-height: 1;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.15s;
+            z-index: 2;
+            background: none;
+            border: none;
+            padding: 0;
+            color: #94a3b8;
+            pointer-events: auto;
+        }
+        .gamebutton { position: relative; }
+        .gamebutton:hover .fav-star { opacity: 1; }
+        .fav-star.starred { opacity: 1; color: #facc15; }
+
+        .favourites-section, .recent-section {
+            background: rgba(15,23,42,0.4);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid rgba(148,163,184,0.2);
+        }
+        .favourites-section h1, .recent-section h1 {
+            margin-bottom: 0.5rem;
+            color: #e2e8f0;
+            font-size: 1.25rem;
+        }
+        .favourites-section .empty-hint, .recent-section .empty-hint {
+            color: #475569;
+            font-size: 0.82rem;
+            background: transparent;
+            text-align: left;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
+    <!-- Iframe overlay: games load here instead of navigating away -->
+    <div id="game-overlay">
+        <div id="overlay-topbar">
+            <span id="overlay-title">Loading…</span>
+            <button id="overlay-close">✕ Close</button>
+        </div>
+        <iframe id="game-frame" allowfullscreen allow="autoplay"></iframe>
+    </div>
+
     <header>
         <center> <img src="favicon.png" alt="VLE Logo" width="200" height="200"> </center>
         <h3>-~- Learning for all, 100% not bothered by Smoothwall! -~-</h3>
@@ -154,29 +275,44 @@
             <img src="https://visitor-badge.laobi.icu/badge?page_id=pefia.schoolworkhelper.games&left_color=%231e293b&right_color=%233b82f6&left_text=Views" alt="Page view count badge">
         </section>
 
+        <section class="favourites-section">
+            <h1>⭐ Favourites</h1>
+            <div class="games" id="fav-games">
+                <p class="empty-hint">Star any game to pin it here for quick access.</p>
+            </div>
+        </section>
+
+        <section class="recent-section">
+            <h1>🕹️ Recently Played</h1>
+            <div class="games" id="recent-games">
+                <p class="empty-hint">Games you open will appear here.</p>
+            </div>
+        </section>
+
         <section class="homework-section">
             <h1>Homework Tasks (20)</h1>
-            <div class="games">
-                <a class="gamebutton" href="twenT48/index.html"><img src="twenT48/icon.png"></a>
-                <a class="gamebutton" href="hxtrs/index.html"><img src="hxtrs/icon.png"></a>
-                <a class="gamebutton" href="rdsrd/index.html"><img src="rdsrd/icon.png"></a>
-                <a class="gamebutton" href="polytrack/index.html"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQL9OEod1DF5z0dE45V1rtBLlpjUQWUNjGzYg&s"></a>
-                <a class="gamebutton" href="infmar/main.html"><img src="infmar/icon.png"></a>
-                <a class="gamebutton" href="twdf/index.html"><img src="twdf/icon.png"></a>
-                <a class="gamebutton" href="typr/typr.html"><img src="typr/icon.png"></a>
-                <a class="gamebutton" href="f1/index.html"><img src="f1/icon.png"></a>
-                <a class="gamebutton" href="wlfjs/index.html"><img src="wlfjs/icon.png"></a>
+            <input class="search-bar" id="search" type="text" placeholder="🔍  Search tasks…" autocomplete="off">
+            <div class="games" id="all-games">
+                <a class="gamebutton" data-src="twenT48/index.html" data-name="2048"><img src="twenT48/icon.png"><span class="game-label">2048</span></a>
+                <a class="gamebutton" data-src="hxtrs/index.html" data-name="Hextris"><img src="hxtrs/icon.png"><span class="game-label">Hextris</span></a>
+                <a class="gamebutton" data-src="rdsrd/index.html" data-name="Radius Raid"><img src="rdsrd/icon.png"><span class="game-label">Radius Raid</span></a>
+                <a class="gamebutton" data-src="polytrack/index.html" data-name="Polytrack"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQL9OEod1DF5z0dE45V1rtBLlpjUQWUNjGzYg&s"><span class="game-label">Polytrack</span></a>
+                <a class="gamebutton" data-src="infmar/main.html" data-name="Infinite Mario"><img src="infmar/icon.png"><span class="game-label">Infinite Mario</span></a>
+                <a class="gamebutton" data-src="twdf/index.html" data-name="Tower Defense"><img src="twdf/icon.png"><span class="game-label">Tower Defense</span></a>
+                <a class="gamebutton" data-src="typr/typr.html" data-name="Typer"><img src="typr/icon.png"><span class="game-label">Typer</span></a>
+                <a class="gamebutton" data-src="f1/index.html" data-name="F1 Racing"><img src="f1/icon.png"><span class="game-label">F1 Racing</span></a>
+                <a class="gamebutton" data-src="wlfjs/index.html" data-name="Wolfenstein 3D"><img src="wlfjs/icon.png"><span class="game-label">Wolfenstein 3D</span></a>
                 <!-- Removed Getaway Shootout/gtwyshtut per request -->
-                <a class="gamebutton" href="tptptp/index.html"><img src="tptptp/icon.png"></a>
-                <a class="gamebutton" href="stckmnhk/index.html"><img src="stckmnhk/icon.jpg"></a>
-                <a class="gamebutton" href="flpybrd/index.html"><img src="flpybrd/icon.png"></a>
-                <a class="gamebutton" href="chrdno/index.html"><img src="chrdno/icon.png"></a>
-                <a class="gamebutton" href="stck/index.html"><img src="stck/icon.png"></a>
-                <a class="gamebutton" href="wdl/index.html"><img src="wdl/icon.png"></a>
+                <a class="gamebutton" data-src="tptptp/index.html" data-name="TapTapTap"><img src="tptptp/icon.png"><span class="game-label">TapTapTap</span></a>
+                <a class="gamebutton" data-src="stckmnhk/index.html" data-name="Stickman Hook"><img src="stckmnhk/icon.jpg"><span class="game-label">Stickman Hook</span></a>
+                <a class="gamebutton" data-src="flpybrd/index.html" data-name="Flappy Bird"><img src="flpybrd/icon.png"><span class="game-label">Flappy Bird</span></a>
+                <a class="gamebutton" data-src="chrdno/index.html" data-name="Chord No"><img src="chrdno/icon.png"><span class="game-label">Chord No</span></a>
+                <a class="gamebutton" data-src="stck/index.html" data-name="Stack"><img src="stck/icon.png"><span class="game-label">Stack</span></a>
+                <a class="gamebutton" data-src="wdl/index.html" data-name="Wordle"><img src="wdl/icon.png"><span class="game-label">Wordle</span></a>
                 <!-- Removed cc per request -->
-                <a class="gamebutton" href="rlyvtx/index.html"><img src="rlyvtx/icon.png"></a>
-                <a class="gamebutton" href="tnyfsh/index.html"><img src="tnyfsh/icon.png"></a>
-                <a class="gamebutton" href="egycr/index.html"><img src="egycr/icon.png"></a>
+                <a class="gamebutton" data-src="rlyvtx/index.html" data-name="Rolly Vortex"><img src="rlyvtx/icon.png"><span class="game-label">Rolly Vortex</span></a>
+                <a class="gamebutton" data-src="tnyfsh/index.html" data-name="Tiny Fishing"><img src="tnyfsh/icon.png"><span class="game-label">Tiny Fishing</span></a>
+                <a class="gamebutton" data-src="egycr/index.html" data-name="Eggy Car"><img src="egycr/icon.png"><span class="game-label">Eggy Car</span></a>
             </div>
         </section>
 
@@ -184,13 +320,13 @@
             <h1>Due Tasks (7)</h1>
             <p>These homework tools may or may not work as intended!</p>
             <div class="games">
-                <a class="gamebutton" href="subsurf/subsurfs.html"><img src="subsurf/icon.png"></a>
-                <a class="gamebutton" href="dm/index.html"><img src="dm/icon.png"></a>
-                <a class="gamebutton" href="crsyrd/index.html"><img src="crsyrd/icon.png"></a>
-                <a class="gamebutton" href="cbfld/index.html"><img src="cbfld/icon.jpg"></a>
-                <a class="gamebutton" href="rtbwl/index.html"><img src="rtbwl/icon.png"></a>
-                <a class="gamebutton" href="trts/index.html"><img src="trts/icon.png"></a>
-                <a class="gamebutton" href="chtwntftet/couch/index.html"><img src="chtwntftet/icon.jpg"></a>
+                <a class="gamebutton" data-src="subsurf/subsurfs.html" data-name="Subway Surfers"><img src="subsurf/icon.png"><span class="game-label">Subway Surfers</span></a>
+                <a class="gamebutton" data-src="dm/index.html" data-name="DOOM"><img src="dm/icon.png"><span class="game-label">DOOM</span></a>
+                <a class="gamebutton" data-src="crsyrd/index.html" data-name="Crossy Road"><img src="crsyrd/icon.png"><span class="game-label">Crossy Road</span></a>
+                <a class="gamebutton" data-src="cbfld/index.html" data-name="Cubefield"><img src="cbfld/icon.jpg"><span class="game-label">Cubefield</span></a>
+                <a class="gamebutton" data-src="rtbwl/index.html" data-name="Retro Bowl"><img src="rtbwl/icon.png"><span class="game-label">Retro Bowl</span></a>
+                <a class="gamebutton" data-src="trts/index.html" data-name="Tetris"><img src="trts/icon.png"><span class="game-label">Tetris</span></a>
+                <a class="gamebutton" data-src="chtwntftet/couch/index.html" data-name="Couch 2048"><img src="chtwntftet/icon.jpg"><span class="game-label">Couch 2048</span></a>
                 <!-- Removed cloak browser per request -->
             </div>
         </section>
@@ -212,23 +348,167 @@
     <!-- External JavaScript -->
     <script src="scripts.js"></script>
     <script>
-        // Function to toggle rainbow background effect
-        function toggleRainbowBackground() {
+        // ── Rainbow / panic key ──────────────────────────────────────────────
+        document.getElementById('lockIcon').addEventListener('click', () => {
             document.body.classList.toggle('rainbow-background');
+        });
+        document.addEventListener('keydown', e => {
+            if (e.altKey && e.shiftKey) window.location.href = 'https://www.google.com';
+        });
+
+        // ── Iframe overlay ───────────────────────────────────────────────────
+        const overlay      = document.getElementById('game-overlay');
+        const gameFrame    = document.getElementById('game-frame');
+        const overlayTitle = document.getElementById('overlay-title');
+
+        function openGame(src, name) {
+            overlayTitle.textContent = name;
+            gameFrame.src = src;
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            addRecent(src, name);
         }
 
-        // Add click event listener to lock icon
-        document.getElementById('lockIcon').addEventListener('click', toggleRainbowBackground);
+        document.getElementById('overlay-close').addEventListener('click', () => {
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+            gameFrame.src = '';
+        });
 
-        // Function to handle Alt + Shift key press
-        function handleKeyPress(event) {
-        if (event.altKey && event.shiftKey) {
-            window.location.href = "https://www.google.com";
+        // Escape key closes overlay
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && overlay.classList.contains('open')) {
+                document.getElementById('overlay-close').click();
+            }
+        });
+
+        // ── Intercept game button clicks ─────────────────────────────────────
+        document.querySelectorAll('.gamebutton[data-src]').forEach(btn => {
+            // Add star button
+            const star = document.createElement('button');
+            star.className = 'fav-star';
+            star.textContent = '★';
+            star.title = 'Favourite';
+            star.addEventListener('click', e => {
+                e.stopPropagation();
+                toggleFav(btn.dataset.src, btn.dataset.name, btn.querySelector('img').src);
+            });
+            btn.appendChild(star);
+
+            btn.addEventListener('click', e => {
+                e.preventDefault();
+                openGame(btn.dataset.src, btn.dataset.name);
+            });
+        });
+
+        // ── Favourites (localStorage) ────────────────────────────────────────
+        const FAV_KEY = 'swh_favourites';
+
+        function getFavs() {
+            try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; }
+            catch (e) { console.error('Error reading favourites:', e); return []; }
         }
-    }
+        function saveFavs(favs) {
+            localStorage.setItem(FAV_KEY, JSON.stringify(favs));
+        }
 
-        // Add keydown event listener to document
-        document.addEventListener('keydown', handleKeyPress);
+        function toggleFav(src, name, imgSrc) {
+            const favs = getFavs();
+            const idx = favs.findIndex(f => f.src === src);
+            if (idx === -1) favs.push({ src, name, imgSrc });
+            else favs.splice(idx, 1);
+            saveFavs(favs);
+            renderFavs();
+            updateStars();
+        }
+
+        function renderFavs() {
+            const favs = getFavs();
+            const container = document.getElementById('fav-games');
+            container.innerHTML = '';
+            if (!favs.length) {
+                container.innerHTML = '<p class="empty-hint">Star any game to pin it here for quick access.</p>';
+                return;
+            }
+            favs.forEach(({ src, name, imgSrc }) => {
+                container.appendChild(makeCard(src, name, imgSrc));
+            });
+        }
+
+        function updateStars() {
+            const favs = getFavs();
+            document.querySelectorAll('.gamebutton[data-src] .fav-star').forEach(star => {
+                const src = star.closest('[data-src]').dataset.src;
+                star.classList.toggle('starred', favs.some(f => f.src === src));
+            });
+        }
+
+        // ── Recently Played (localStorage) ──────────────────────────────────
+        const RECENT_KEY = 'swh_recent';
+        const MAX_RECENT = 6;
+
+        function getRecent() {
+            try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; }
+            catch (e) { console.error('Error reading recently played:', e); return []; }
+        }
+
+        function addRecent(src, name) {
+            const btn = document.querySelector(`.gamebutton[data-src="${src}"]`);
+            const imgSrc = btn ? btn.querySelector('img').src : '';
+            let recent = getRecent().filter(r => r.src !== src);
+            recent.unshift({ src, name, imgSrc });
+            if (recent.length > MAX_RECENT) recent = recent.slice(0, MAX_RECENT);
+            localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
+            renderRecent();
+        }
+
+        function renderRecent() {
+            const recent = getRecent();
+            const container = document.getElementById('recent-games');
+            container.innerHTML = '';
+            if (!recent.length) {
+                container.innerHTML = '<p class="empty-hint">Games you open will appear here.</p>';
+                return;
+            }
+            recent.forEach(({ src, name, imgSrc }) => {
+                container.appendChild(makeCard(src, name, imgSrc));
+            });
+        }
+
+        // ── Card factory (for favs / recent) ────────────────────────────────
+        function makeCard(src, name, imgSrc) {
+            const a = document.createElement('a');
+            a.className = 'gamebutton';
+            a.dataset.src = src;
+            a.dataset.name = name;
+
+            const img = document.createElement('img');
+            img.setAttribute('src', imgSrc);
+            img.setAttribute('alt', name);
+
+            const label = document.createElement('span');
+            label.className = 'game-label';
+            label.textContent = name;
+
+            a.appendChild(img);
+            a.appendChild(label);
+            a.addEventListener('click', e => { e.preventDefault(); openGame(src, name); });
+            return a;
+        }
+
+        // ── Search / filter ──────────────────────────────────────────────────
+        document.getElementById('search').addEventListener('input', function () {
+            const q = this.value.trim().toLowerCase();
+            document.querySelectorAll('#all-games .gamebutton, .due-tasks-section .gamebutton').forEach(btn => {
+                const match = !q || btn.dataset.name.toLowerCase().includes(q);
+                btn.classList.toggle('hidden', !match);
+            });
+        });
+
+        // ── Init ─────────────────────────────────────────────────────────────
+        renderFavs();
+        renderRecent();
+        updateStars();
     </script>
 </body>
 </html>
