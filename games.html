@@ -27,7 +27,7 @@
             color: #e2e8f0;
         }
 
-        .games {
+        .grid-section {
             display: grid;
             grid-template-columns: repeat(auto-fit,minmax(110px,1fr));
             gap: 0.9rem;
@@ -244,7 +244,7 @@
     </style>
 </head>
 <body>
-    <!-- Iframe overlay: games load here instead of navigating away -->
+    <!-- Iframe overlay: content loads here instead of navigating away -->
     <div id="game-overlay">
         <div id="overlay-topbar">
             <span id="overlay-title">Loading…</span>
@@ -272,27 +272,27 @@
 
         <section class="view-counter-section">
             <p>Page Views</p>
-            <img src="https://visitor-badge.laobi.icu/badge?page_id=pefia.schoolworkhelper.games&left_color=%231e293b&right_color=%233b82f6&left_text=Views" alt="Page view count badge">
+            <img src="https://visitor-badge.laobi.icu/badge?page_id=pefia.schoolworkhelper.items&left_color=%231e293b&right_color=%233b82f6&left_text=Views" alt="Page view count badge">
         </section>
 
         <section class="favourites-section">
             <h1>⭐ Favourites</h1>
-            <div class="games" id="fav-games">
+            <div class="grid-section" id="fav-items">
                 <p class="empty-hint">Star any game to pin it here for quick access.</p>
             </div>
         </section>
 
         <section class="recent-section">
             <h1>🕹️ Recently Played</h1>
-            <div class="games" id="recent-games">
-                <p class="empty-hint">Games you open will appear here.</p>
+            <div class="grid-section" id="recent-items">
+                <p class="empty-hint">Items you open will appear here.</p>
             </div>
         </section>
 
         <section class="homework-section">
             <h1>Homework Tasks (20)</h1>
             <input class="search-bar" id="search" type="text" placeholder="🔍  Search tasks…" autocomplete="off">
-            <div class="games" id="all-games">
+            <div class="grid-section" id="all-items">
                 <a class="gamebutton" data-src="twenT48/index.html" data-name="2048"><img src="twenT48/icon.png"><span class="game-label">2048</span></a>
                 <a class="gamebutton" data-src="hxtrs/index.html" data-name="Hextris"><img src="hxtrs/icon.png"><span class="game-label">Hextris</span></a>
                 <a class="gamebutton" data-src="rdsrd/index.html" data-name="Radius Raid"><img src="rdsrd/icon.png"><span class="game-label">Radius Raid</span></a>
@@ -319,7 +319,7 @@
         <section class="due-tasks-section">
             <h1>Due Tasks (7)</h1>
             <p>These homework tools may or may not work as intended!</p>
-            <div class="games">
+            <div class="grid-section">
                 <a class="gamebutton" data-src="subsurf/subsurfs.html" data-name="Subway Surfers"><img src="subsurf/icon.png"><span class="game-label">Subway Surfers</span></a>
                 <a class="gamebutton" data-src="dm/index.html" data-name="DOOM"><img src="dm/icon.png"><span class="game-label">DOOM</span></a>
                 <a class="gamebutton" data-src="crsyrd/index.html" data-name="Crossy Road"><img src="crsyrd/icon.png"><span class="game-label">Crossy Road</span></a>
@@ -424,7 +424,7 @@
 
         function renderFavs() {
             const favs = getFavs();
-            const container = document.getElementById('fav-games');
+            const container = document.getElementById('fav-items');
             container.innerHTML = '';
             if (!favs.length) {
                 container.innerHTML = '<p class="empty-hint">Star any game to pin it here for quick access.</p>';
@@ -464,10 +464,10 @@
 
         function renderRecent() {
             const recent = getRecent();
-            const container = document.getElementById('recent-games');
+            const container = document.getElementById('recent-items');
             container.innerHTML = '';
             if (!recent.length) {
-                container.innerHTML = '<p class="empty-hint">Games you open will appear here.</p>';
+                container.innerHTML = '<p class="empty-hint">Items you open will appear here.</p>';
                 return;
             }
             recent.forEach(({ src, name, imgSrc }) => {
@@ -499,7 +499,7 @@
         // ── Search / filter ──────────────────────────────────────────────────
         document.getElementById('search').addEventListener('input', function () {
             const q = this.value.trim().toLowerCase();
-            document.querySelectorAll('#all-games .gamebutton, .due-tasks-section .gamebutton').forEach(btn => {
+            document.querySelectorAll('#all-items .gamebutton, .due-tasks-section .gamebutton').forEach(btn => {
                 const match = !q || btn.dataset.name.toLowerCase().includes(q);
                 btn.classList.toggle('hidden', !match);
             });
