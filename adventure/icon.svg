@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="48" fill="url(#sky)"/>
+  <circle cx="390" cy="122" r="48" fill="#fde047"/>
+  <rect x="74" y="250" width="364" height="174" rx="24" fill="#22c55e"/>
+  <text x="256" y="306" text-anchor="middle" font-size="42" font-family="Arial" fill="#064e3b" font-weight="700">ADVENTURE</text>
+  <text x="256" y="360" text-anchor="middle" font-size="60" font-family="Arial" fill="#78350f" font-weight="700">$</text>
+  <text x="256" y="412" text-anchor="middle" font-size="36" font-family="Arial" fill="#14532d" font-weight="700">CAPITALIST</text>
+</svg>

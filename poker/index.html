@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Poker vs Bots</title>
+  <style>
+    body{font-family:Arial,sans-serif;background:#0f5132;color:#fff;margin:0;padding:20px}
+    .table{max-width:900px;margin:auto;background:#0b3d27;padding:20px;border-radius:16px}
+    .cards{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+    .card{background:#fff;color:#111;padding:10px 12px;border-radius:8px;min-width:42px;text-align:center;font-weight:700}
+    button{padding:10px 14px;border:0;border-radius:8px;cursor:pointer;margin-right:8px}
+    #log{background:#062b1b;padding:10px;border-radius:8px;min-height:90px;white-space:pre-line}
+  </style>
+</head>
+<body>
+<div class="table">
+  <h1>Simple Poker (High Card) vs 2 Bots</h1>
+  <p>Each player gets 5 cards. Highest single card wins.</p>
+  <button onclick="deal()">Deal New Hand</button>
+  <div id="players"></div>
+  <h3>Result</h3>
+  <div id="log"></div>
+</div>
+<script>
+const suits=['♠','♥','♦','♣'];
+const ranks=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+const val=r=>ranks.indexOf(r);
+const names=['You','Bot A','Bot B'];
+function deck(){const d=[];for(const s of suits)for(const r of ranks)d.push({r,s});return d.sort(()=>Math.random()-.5)}
+function renderHand(h){return `<div class="cards">${h.map(c=>`<div class="card">${c.r}${c.s}</div>`).join('')}</div>`}
+function best(h){return Math.max(...h.map(c=>val(c.r)))}
+function deal(){
+  const d=deck();
+  const players=names.map(n=>({n,h:d.splice(0,5)}));
+  const container=document.getElementById('players');
+  container.innerHTML=players.map(p=>`<h3>${p.n}</h3>${renderHand(p.h)}`).join('');
+  const scores=players.map(p=>({n:p.n,s:best(p.h)}));
+  const max=Math.max(...scores.map(x=>x.s));
+  const winners=scores.filter(x=>x.s===max).map(x=>x.n);
+  document.getElementById('log').textContent=`${scores.map(s=>`${s.n}: ${ranks[s.s]}`).join('\n')}\n\nWinner: ${winners.join(', ')}`;
+}
+deal();
+</script>
+</body>
+</html>

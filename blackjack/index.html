@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blackjack vs Bots</title>
+  <style>
+    body{font-family:Arial,sans-serif;background:#1f2937;color:#fff;margin:0;padding:20px}
+    .table{max-width:920px;margin:auto;background:#111827;padding:20px;border-radius:16px}
+    .cards{display:flex;gap:8px;flex-wrap:wrap}
+    .card{background:#fff;color:#111;padding:10px 12px;border-radius:8px;min-width:42px;text-align:center;font-weight:700}
+    button{padding:10px 14px;border:0;border-radius:8px;cursor:pointer;margin-right:8px}
+    #status{white-space:pre-line;background:#0b1220;padding:10px;border-radius:8px;margin-top:10px}
+  </style>
+</head>
+<body>
+<div class="table">
+  <h1>Blackjack vs 2 Bots</h1>
+  <p>Get closer to 21 than bots without busting.</p>
+  <div id="you"></div>
+  <button onclick="hit()">Hit</button><button onclick="stand()">Stand</button><button onclick="newGame()">New Game</button>
+  <div id="bots"></div>
+  <div id="status"></div>
+</div>
+<script>
+const suits=['♠','♥','♦','♣'];
+const ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+let d=[],you=[],bots=[[],[]],over=false;
+function deck(){const a=[];for(const s of suits)for(const r of ranks)a.push({r,s});return a.sort(()=>Math.random()-.5)}
+function score(h){let total=0,aces=0;for(const c of h){if(c.r==='A'){aces++;total+=11}else if(['J','Q','K'].includes(c.r)) total+=10; else total+=+c.r}while(total>21&&aces){total-=10;aces--}return total}
+const hand=h=>`<div class="cards">${h.map(c=>`<div class='card'>${c.r}${c.s}</div>`).join('')}</div>`;
+function draw(){document.getElementById('you').innerHTML=`<h3>You (${score(you)})</h3>${hand(you)}`;document.getElementById('bots').innerHTML=bots.map((b,i)=>`<h3>Bot ${i+1} (${over?score(b):'?'})</h3>${hand(over?b:[b[0],{r:'?',s:'?'}])}`).join('')}
+function end(){over=true;for(const b of bots){while(score(b)<17)b.push(d.pop())}draw();const ys=score(you);let msg='';if(ys>21)msg='You busted. ';const results=bots.map((b,i)=>{const s=score(b);if(s>21|| (ys<=21&&ys>s)) return `You beat Bot ${i+1}`; if(ys===s) return `Push with Bot ${i+1}`; return `Bot ${i+1} wins`;});document.getElementById('status').textContent=msg+results.join('\n')}
+function hit(){if(over)return;you.push(d.pop());draw();if(score(you)>21)end()}
+function stand(){if(!over)end()}
+function newGame(){d=deck();you=[d.pop(),d.pop()];bots=[[d.pop(),d.pop()],[d.pop(),d.pop()]];over=false;document.getElementById('status').textContent='';draw()}
+newGame();
+</script>
+</body>
+</html>
