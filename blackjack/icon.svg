@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="48" fill="url(#bg2)"/>
+  <rect x="72" y="146" width="170" height="240" rx="16" fill="#fff"/>
+  <text x="98" y="205" font-size="52" font-family="Arial" fill="#111827" font-weight="700">10♣</text>
+  <rect x="190" y="110" width="170" height="240" rx="16" fill="#fff" transform="rotate(9 275 230)"/>
+  <text x="228" y="190" font-size="52" font-family="Arial" fill="#b91c1c" font-weight="700" transform="rotate(9 275 230)">A♦</text>
+  <text x="256" y="454" text-anchor="middle" font-size="58" font-family="Arial" fill="#facc15" font-weight="700">21</text>
+</svg>
