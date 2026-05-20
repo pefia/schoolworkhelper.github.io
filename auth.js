@@ -33,6 +33,17 @@
     return clientPromise;
   }
 
+
+  async function verifyActiveSession() {
+    const client = await getClient();
+    try {
+      await client.getTokenSilently({ cacheMode: 'off' });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
   async function ensureCallbackHandled() {
     if (location.pathname !== '/login.html') return;
     if (!(location.search.includes('code=') && location.search.includes('state='))) return;
