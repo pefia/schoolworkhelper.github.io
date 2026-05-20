@@ -157,6 +157,13 @@
         <p id="error-msg">Invalid key. Are you even sigma?</p>
     </div>
 
+    <script>
+        if (location.search.includes("code=") || location.search.includes("state=") || location.search.includes("error=")) {
+            window.location.replace("/login.html" + location.search + location.hash);
+        } else {
+            window.location.replace("/login.html");
+        }
+    </script>
     <!-- Load Particles.js script -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>

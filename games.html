@@ -136,9 +136,12 @@
     </style>
 </head>
 <body>
+    <script src="https://cdn.auth0.com/js/auth0-spa-js/2.18/auth0-spa-js.production.js"></script>
+    <script src="/auth.js"></script>
+    <script>(async () => { await Auth.requireAuth(); })();</script>
     <header>
         <center> <img src="favicon.png" alt="VLE Logo" width="200" height="200"> </center>
-        <h3>-~- Disclamer: I am not responsible for any usage of this website during schooltime, it is intended for use during late class or at home! -~-</h3>
+        <h3 id="welcome">-~- Disclamer: I am not responsible for any usage of this website during schooltime, it is intended for use during late class or at home! -~-</h3>
     </header>
 
     <main>
@@ -150,6 +153,7 @@
                 <button class="button navbar-control" type="button" id="btnTitle">Set title</button>
                 <button class="button navbar-control" type="button" id="btnIcon">Set Icon</button>
                 <button class="button navbar-control" type="button" id="btnReset">Reset</button>
+                <button class="button navbar-control" type="button" id="btnLogout">Logout</button>
             </center>
         </section>
 
@@ -236,6 +240,18 @@
 
         // Add keydown event listener to document
         document.addEventListener('keydown', handleKeyPress);
+
+        (async function () {
+            const user = await Auth.currentUser();
+            if (user) {
+                const name = user.nickname || user.name || user.email || 'user';
+                document.getElementById('welcome').textContent = 'Logged in as ' + name + ' · Use ALT + SHIFT for quick hide';
+            }
+
+            document.getElementById('btnLogout').addEventListener('click', async function () {
+                await Auth.logout();
+            });
+        })();
     </script>
 </body>
 </html>

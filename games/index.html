@@ -1,0 +1,15 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redirecting...</title></head>
+<body>
+<script src="https://cdn.auth0.com/js/auth0-spa-js/2.18/auth0-spa-js.production.js"></script>
+<script src="/auth.js"></script>
+<script>
+  (async function () {
+    if (!(await Auth.isAuthenticated())) {
+      location.replace('/login.html?next=' + encodeURIComponent('/games/'));
+    } else {
+      location.replace('/games.html');
+    }
+  })();
+</script>
+</body></html>
