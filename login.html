@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
+  <style>
+    body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0b1020;color:#f8fafc;font-family:Inter,Segoe UI,sans-serif}
+    .card{width:min(420px,92vw);padding:24px;border-radius:16px;background:#111a32;border:1px solid #334155}
+    h1{margin:0 0 14px}.muted{opacity:.85}
+    button{width:100%;padding:12px;border:0;border-radius:10px;color:white;font-weight:700;cursor:pointer;margin-top:10px}
+    .login{background:#3b82f6}.signup{background:#22c55e}
+    .error{color:#fca5a5;display:none}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Welcome</h1>
+    <p class="muted">Sign in with Auth0 to access games.</p>
+    <p id="error" class="error"></p>
+    <button class="login" id="loginBtn">Login</button>
+    <button class="signup" id="signupBtn">Sign up</button>
+  </div>
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.18/auth0-spa-js.production.js"></script>
+  <script src="/auth.js"></script>
+  <script>
+    (async function () {
+      const result = await Auth.completeLoginRedirect();
+      if (result.ok && result.next) {
+        location.replace(result.next);
+        return;
+      }
+      if (result.error) {
+        error.textContent = result.error;
+        error.style.display = 'block';
+      }
+      const mode = new URLSearchParams(location.search).get('mode');
+      if (mode === 'signup') {
+        Auth.login(true);
+      }
+    })();
+
+    loginBtn.addEventListener('click', () => Auth.login(false));
+    signupBtn.addEventListener('click', () => Auth.login(true));
+  </script>
+</body>
+</html>
