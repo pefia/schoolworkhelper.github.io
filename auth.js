@@ -71,15 +71,12 @@
     async isAuthenticated() {
       await ensureCallbackHandled();
       const client = await getClient();
-      const authed = await client.isAuthenticated();
-      if (!authed) return false;
-      return verifyActiveSession();
+      return client.isAuthenticated();
     },
     async currentUser() {
       await ensureCallbackHandled();
       const client = await getClient();
       if (!(await client.isAuthenticated())) return null;
-      if (!(await verifyActiveSession())) return null;
       return client.getUser();
     },
     async requireAuth() {
