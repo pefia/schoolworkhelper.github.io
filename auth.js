@@ -100,20 +100,12 @@
       return client.getUser();
     },
     async requireAuth() {
-      await ensureCallbackHandled();
-      return enforceAuth();
-    },
-    startSessionGuard(intervalMs = 30000) {
-      this.requireAuth();
-      const onVisible = () => {
-        if (document.visibilityState === 'visible') this.requireAuth();
-      };
-      document.addEventListener('visibilitychange', onVisible);
-      const timer = setInterval(() => this.requireAuth(), intervalMs);
-      return () => {
-        clearInterval(timer);
-        document.removeEventListener('visibilitychange', onVisible);
-      };
+      const authed = await this.isAuthenticated();
+      const activeSession = authed ? await verifyActiveSession() : false;
+      if (!authed || !activeSession) {
+        const next = encodeURIComponent(location.pathname + location.search + location.hash);
+        location.replace('/login.html?next=' + next);
+      }
     },
     async completeLoginRedirect() {
       const params = new URLSearchParams(location.search);
