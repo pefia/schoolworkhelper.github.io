@@ -52,6 +52,26 @@
     history.replaceState({}, '', '/login.html' + location.hash);
   }
 
+
+  function redirectToLogin() {
+    const next = encodeURIComponent(location.pathname + location.search + location.hash);
+    location.replace('/login.html?next=' + next);
+  }
+
+  async function enforceAuth() {
+    const client = await getClient();
+    const authed = await client.isAuthenticated();
+    const activeSession = authed ? await verifyActiveSession() : false;
+    if (!authed || !activeSession) {
+      try {
+        await client.logout({ logoutParams: { returnTo: location.origin + '/login.html' }, localOnly: true });
+      } catch {}
+      redirectToLogin();
+      return false;
+    }
+    return true;
+  }
+
   window.Auth = {
     async login(isSignup) {
       const client = await getClient();

@@ -103,7 +103,7 @@
     <div class="page-shell">
     <script src="https://cdn.auth0.com/js/auth0-spa-js/2.18/auth0-spa-js.production.js"></script>
     <script src="/auth.js"></script>
-    <script>(async () => { await Auth.requireAuth(); })();</script>
+    <script>(async () => { await Auth.requireAuth(); Auth.startSessionGuard(); })();</script>
     <header>
         <center> <img src="favicon.png" alt="VLE Logo" width="200" height="200"> </center>
         <h3 id="welcome">-~- Homework dashboard for planning, tracking, and opening class tasks quickly. -~-</h3>
