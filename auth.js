@@ -81,7 +81,8 @@
     },
     async requireAuth() {
       const authed = await this.isAuthenticated();
-      if (!authed) {
+      const activeSession = authed ? await verifyActiveSession() : false;
+      if (!authed || !activeSession) {
         const next = encodeURIComponent(location.pathname + location.search + location.hash);
         location.replace('/login.html?next=' + next);
       }
