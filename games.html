@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tasks - Cranmore VLE - Oracle</title>
+    <title>Homework Hub - Cranmore VLE</title>
     <link rel="icon" type="image/png" href="image-removebg-preview.png">
     <!-- External CSS styles -->
     <link rel="stylesheet" href="styles.css">
@@ -12,140 +12,105 @@
       plausible.init()
     </script>
     <style>
+        :root {
+            --bg: #050816;
+            --panel: rgba(15, 23, 42, 0.68);
+            --stroke: rgba(148, 163, 184, 0.28);
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --accent: #60a5fa;
+        }
+
+        * { box-sizing: border-box; }
+
         body {
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(150deg,#0f172a,#0b1222 45%,#1f2937 100%);
-            color: #f8fafc;
+            font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at top, #16213d 0%, var(--bg) 55%, #02040e 100%);
+            color: var(--text);
             min-height: 100vh;
         }
 
-        header, main {
-            width: min(1100px, 95%);
-            margin: auto;
+        #particles-js {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
         }
 
-        header h3 {
-            font-size: 1.3rem;
-            margin-top: 0.5rem;
-            color: #e2e8f0;
+        .page-shell {
+            position: relative;
+            z-index: 1;
+            width: min(1120px, 94%);
+            margin: 0 auto;
+            padding: 1.3rem 0 2.2rem;
         }
 
-        .games {
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--stroke);
+            border-radius: 18px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 12px 35px rgba(2, 8, 23, 0.4);
+        }
+
+        header { text-align: center; margin-bottom: 1rem; }
+        header img { width: 148px; height: 148px; }
+        header h3 { font-size: 1rem; margin-top: 0.7rem; color: #cbd5e1; }
+
+        .login-section, .privacy-section, .contact-section, .view-counter-section, .homework-section, .due-tasks-section {
+            padding: 1rem 1.1rem;
+            margin: 0 0 1rem 0;
+        }
+
+        .task-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit,minmax(110px,1fr));
-            gap: 0.9rem;
-            justify-items: center;
-            padding: 0.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
+            gap: 0.85rem;
         }
 
-        .gamebutton {
+        .task-card {
             border-radius: 14px;
             overflow: hidden;
-            width: 110px;
-            height: 110px;
-            box-shadow: 0 3px 18px rgba(0, 0, 0, 0.4);
-            transition: transform .25s ease, box-shadow .25s ease;
-            background: #111827;
-            border: 1px solid rgba(148,163,184,0.2);
-            display: inline-block;
+            aspect-ratio: 1 / 1;
+            border: 1px solid rgba(96, 165, 250, 0.34);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+            transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
         }
-
-        .gamebutton:hover {
-            transform: translateY(-4px) scale(1.04);
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6);
-        }
-
-        .gamebutton img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+        .task-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 12px 30px rgba(30,64,175,.4); }
+        .task-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
         .button, .contactbutton {
-            border-radius: 20px;
-            padding: 10px 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            border: 1px solid rgba(148,163,184,0.3);
-            background: rgba(148,163,184,0.15);
-            color: #eef2ff;
-        }
-
-        .button:hover, .contactbutton:hover {
-            background-color: rgba(148,163,184,0.35);
+            border-radius: 999px; padding: 10px 15px; border: 1px solid var(--stroke);
+            background: rgba(96,165,250,.16); color: #eff6ff; cursor: pointer;
         }
 
         .homework-section h1, .due-tasks-section h1, .privacy-section h1, .contact-section h1 {
-            margin-bottom: 0.5rem;
-            color: #e2e8f0;
-            font-size: 1.25rem;
+            margin: 0 0 .5rem 0; font-size: 1.2rem;
         }
 
-        .gamebutton span {
-            font-size: 0.8rem;
-            color: #cbd5e1;
-            text-align: center;
-        }
+        .view-counter-section p { font-size: .75rem; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin: 0 0 .5rem; }
+        .view-counter-section img { border-radius: 6px; height: 28px; }
 
-        .login-section, .privacy-section, .contact-section {
-            background: rgba(15,23,42,0.4);
-            border-radius: 12px;
-            padding: 1rem;
-            margin: 1rem 0;
-            border: 1px solid rgba(148,163,184,0.2);
-        }
-
-        .rainbow-background {
-            animation: rainbow 0.5s infinite;
-        }
-
+        .rainbow-background { animation: rainbow .5s infinite; }
         @keyframes rainbow {
-            0% { background-color: #ff4242; }
-            20% { background-color: #ffa500; }
-            40% { background-color: #ffea00; }
-            60% { background-color: #29a329; }
-            80% { background-color: #3f51b5; }
-            100% { background-color: #9c27b0; }
-        }
-
-        .view-counter-section {
-            background: rgba(15,23,42,0.4);
-            border-radius: 12px;
-            padding: 1rem 1rem 0.85rem;
-            margin: 1rem 0;
-            border: 1px solid rgba(148,163,184,0.2);
-            text-align: center;
-        }
-
-        .view-counter-section p {
-            font-size: 0.78rem;
-            color: #94a3b8;
-            margin: 0 0 0.6rem 0;
-            font-weight: 400;
-            letter-spacing: 0.07em;
-            text-transform: uppercase;
-            background: transparent;
-        }
-
-        .view-counter-section img {
-            border-radius: 6px;
-            height: 28px;
+            0% { background-color: #ff4242; } 20% { background-color: #ffa500; } 40% { background-color: #ffea00; }
+            60% { background-color: #29a329; } 80% { background-color: #3f51b5; } 100% { background-color: #9c27b0; }
         }
     </style>
 </head>
 <body>
+    <div id="particles-js"></div>
+    <div class="page-shell">
     <script src="https://cdn.auth0.com/js/auth0-spa-js/2.18/auth0-spa-js.production.js"></script>
     <script src="/auth.js"></script>
     <script>(async () => { await Auth.requireAuth(); })();</script>
     <header>
         <center> <img src="favicon.png" alt="VLE Logo" width="200" height="200"> </center>
-        <h3 id="welcome">-~- Disclamer: I am not responsible for any usage of this website during schooltime, it is intended for use during late class or at home! -~-</h3>
+        <h3 id="welcome">-~- Homework dashboard for planning, tracking, and opening class tasks quickly. -~-</h3>
     </header>
 
     <main>
-        <section class="login-section">
+        <section class="login-section panel">
             <center>
                 <input type="text" name="username" class="input navbar-control" placeholder="Enter fake title" value="Formative" id="title">
                 <input type="text" name="password" class="input navbar-control" placeholder="fakeformative.png" value="fakeformative.png" id="icon">
@@ -157,63 +122,63 @@
             </center>
         </section>
 
-        <section class="view-counter-section">
+        <section class="view-counter-section panel">
             <p>Page Views</p>
             <img src="https://visitor-badge.laobi.icu/badge?page_id=pefia.schoolworkhelper.games&left_color=%231e293b&right_color=%233b82f6&left_text=Views" alt="Page view count badge">
         </section>
 
-        <section class="homework-section">
-            <h1>Homework Tasks (23)</h1>
-            <div class="games">
-                <a class="gamebutton" href="twenT48/index.html"><img src="twenT48/icon.png"></a>
-                <a class="gamebutton" href="hxtrs/index.html"><img src="hxtrs/icon.png"></a>
-                <a class="gamebutton" href="rdsrd/index.html"><img src="rdsrd/icon.png"></a>
-                <a class="gamebutton" href="polytrack/index.html"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQL9OEod1DF5z0dE45V1rtBLlpjUQWUNjGzYg&s"></a>
-                <a class="gamebutton" href="infmar/main.html"><img src="infmar/icon.png"></a>
-                <a class="gamebutton" href="twdf/index.html"><img src="twdf/icon.png"></a>
-                <a class="gamebutton" href="typr/typr.html"><img src="typr/icon.png"></a>
-                <a class="gamebutton" href="f1/index.html"><img src="f1/icon.png"></a>
-                <a class="gamebutton" href="wlfjs/index.html"><img src="wlfjs/icon.png"></a>
-                <!-- Removed Getaway Shootout/gtwyshtut per request -->
-                <a class="gamebutton" href="tptptp/index.html"><img src="tptptp/icon.png"></a>
-                <a class="gamebutton" href="stckmnhk/index.html"><img src="stckmnhk/icon.jpg"></a>
-                <a class="gamebutton" href="flpybrd/index.html"><img src="flpybrd/icon.png"></a>
-                <a class="gamebutton" href="chrdno/index.html"><img src="chrdno/icon.png"></a>
-                <a class="gamebutton" href="stck/index.html"><img src="stck/icon.png"></a>
-                <a class="gamebutton" href="wdl/index.html"><img src="wdl/icon.png"></a>
-                <!-- Removed cc per request -->
-                <a class="gamebutton" href="rlyvtx/index.html"><img src="rlyvtx/icon.png"></a>
-                <a class="gamebutton" href="tnyfsh/index.html"><img src="tnyfsh/icon.png"></a>
-                <a class="gamebutton" href="egycr/index.html"><img src="egycr/icon.png"></a>
-                <a class="gamebutton" href="adventure/index.html"><img src="adventure/icon.svg"></a>
-                <a class="gamebutton" href="poker/index.html"><img src="poker/icon.svg"></a>
-                <a class="gamebutton" href="blackjack/index.html"><img src="blackjack/icon.svg"></a>
+        <section class="homework-section panel">
+            <h1>Homework Tasks (21)</h1>
+            <div class="task-grid">
+                <a class="task-card" href="twenT48/index.html"><img src="twenT48/icon.png"></a>
+                <a class="task-card" href="hxtrs/index.html"><img src="hxtrs/icon.png"></a>
+                <a class="task-card" href="rdsrd/index.html"><img src="rdsrd/icon.png"></a>
+                <a class="task-card" href="polytrack/index.html"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQL9OEod1DF5z0dE45V1rtBLlpjUQWUNjGzYg&s"></a>
+                <a class="task-card" href="infmar/main.html"><img src="infmar/icon.png"></a>
+                <a class="task-card" href="twdf/index.html"><img src="twdf/icon.png"></a>
+                <a class="task-card" href="typr/typr.html"><img src="typr/icon.png"></a>
+                <a class="task-card" href="f1/index.html"><img src="f1/icon.png"></a>
+                <a class="task-card" href="wlfjs/index.html"><img src="wlfjs/icon.png"></a>
+                
+                <a class="task-card" href="tptptp/index.html"><img src="tptptp/icon.png"></a>
+                <a class="task-card" href="stckmnhk/index.html"><img src="stckmnhk/icon.jpg"></a>
+                <a class="task-card" href="flpybrd/index.html"><img src="flpybrd/icon.png"></a>
+                <a class="task-card" href="chrdno/index.html"><img src="chrdno/icon.png"></a>
+                <a class="task-card" href="stck/index.html"><img src="stck/icon.png"></a>
+                <a class="task-card" href="wdl/index.html"><img src="wdl/icon.png"></a>
+                
+                <a class="task-card" href="rlyvtx/index.html"><img src="rlyvtx/icon.png"></a>
+                <a class="task-card" href="tnyfsh/index.html"><img src="tnyfsh/icon.png"></a>
+                <a class="task-card" href="egycr/index.html"><img src="egycr/icon.png"></a>
+                <a class="task-card" href="adventure/index.html"><img src="adventure/icon.svg"></a>
+                <a class="task-card" href="poker/index.html"><img src="poker/icon.svg"></a>
+                <a class="task-card" href="blackjack/index.html"><img src="blackjack/icon.svg"></a>
             </div>
         </section>
 
-        <section class="due-tasks-section">
+        <section class="due-tasks-section panel">
             <h1>Due Tasks (7)</h1>
-            <p>These homework tools may or may not work as intended!</p>
-            <div class="games">
-                <a class="gamebutton" href="subsurf/subsurfs.html"><img src="subsurf/icon.png"></a>
-                <a class="gamebutton" href="dm/index.html"><img src="dm/icon.png"></a>
-                <a class="gamebutton" href="crsyrd/index.html"><img src="crsyrd/icon.png"></a>
-                <a class="gamebutton" href="cbfld/index.html"><img src="cbfld/icon.jpg"></a>
-                <a class="gamebutton" href="rtbwl/index.html"><img src="rtbwl/icon.png"></a>
-                <a class="gamebutton" href="trts/index.html"><img src="trts/icon.png"></a>
-                <a class="gamebutton" href="chtwntftet/couch/index.html"><img src="chtwntftet/icon.jpg"></a>
-                <!-- Removed cloak browser per request -->
+            <p>Stay organized with these focused homework tools.</p>
+            <div class="task-grid">
+                <a class="task-card" href="subsurf/subsurfs.html"><img src="subsurf/icon.png"></a>
+                <a class="task-card" href="dm/index.html"><img src="dm/icon.png"></a>
+                <a class="task-card" href="crsyrd/index.html"><img src="crsyrd/icon.png"></a>
+                <a class="task-card" href="cbfld/index.html"><img src="cbfld/icon.jpg"></a>
+                <a class="task-card" href="rtbwl/index.html"><img src="rtbwl/icon.png"></a>
+                <a class="task-card" href="trts/index.html"><img src="trts/icon.png"></a>
+                <a class="task-card" href="chtwntftet/couch/index.html"><img src="chtwntftet/icon.jpg"></a>
+                
             </div>
         </section>
 
-        <section class="privacy-section">
-            <h1>Privacy first</h1>
+        <section class="privacy-section panel">
+            <h1>Privacy First</h1>
             <img src="lock.png" alt="Lock Icon" style="display: block; margin: 0 auto; cursor: pointer;" id="lockIcon">
             <p>Anonymity<br>ALT + SHIFT to redirect to Google. Note: This only works on the home screen and there is no back for extra security</p>
         </section>
 
-        <section class="contact-section">
-            <h1>Contact</h1>
+        <section class="contact-section panel">
+            <h1>Support Contact</h1>
             <div class="contacts">
                 <a class="contactbutton" href="mailto:playboicarti225@protonmail.com?subject=Your Homework Site"><img src="gmail.jpg" alt="Gmail Icon"></a>
             </div>
@@ -221,8 +186,35 @@
     </main>
 
     <!-- External JavaScript -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="scripts.js"></script>
     <script>
+
+
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 260, density: { enable: true, value_area: 900 } },
+                color: { value: "#ffffff" },
+                shape: { type: "circle" },
+                opacity: { value: 0.75, random: true },
+                size: { value: 4, random: true },
+                line_linked: { enable: false },
+                move: {
+                    enable: true,
+                    speed: 2.2,
+                    direction: "bottom",
+                    random: true,
+                    straight: false,
+                    out_mode: "out"
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: { onhover: { enable: false }, onclick: { enable: false }, resize: true }
+            },
+            retina_detect: true
+        });
+
         // Function to toggle rainbow background effect
         function toggleRainbowBackground() {
             document.body.classList.toggle('rainbow-background');
@@ -253,5 +245,6 @@
             });
         })();
     </script>
+    </div>
 </body>
 </html>
