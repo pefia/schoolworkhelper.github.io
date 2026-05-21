@@ -52,6 +52,26 @@
     history.replaceState({}, '', '/login.html' + location.hash);
   }
 
+
+  function redirectToLogin() {
+    const next = encodeURIComponent(location.pathname + location.search + location.hash);
+    location.replace('/login.html?next=' + next);
+  }
+
+  async function enforceAuth() {
+    const client = await getClient();
+    const authed = await client.isAuthenticated();
+    const activeSession = authed ? await verifyActiveSession() : false;
+    if (!authed || !activeSession) {
+      try {
+        await client.logout({ logoutParams: { returnTo: location.origin + '/login.html' }, localOnly: true });
+      } catch {}
+      redirectToLogin();
+      return false;
+    }
+    return true;
+  }
+
   window.Auth = {
     async login(isSignup) {
       const client = await getClient();
@@ -80,11 +100,20 @@
       return client.getUser();
     },
     async requireAuth() {
-      const authed = await this.isAuthenticated();
-      if (!authed) {
-        const next = encodeURIComponent(location.pathname + location.search + location.hash);
-        location.replace('/login.html?next=' + next);
-      }
+      await ensureCallbackHandled();
+      return enforceAuth();
+    },
+    startSessionGuard(intervalMs = 30000) {
+      this.requireAuth();
+      const onVisible = () => {
+        if (document.visibilityState === 'visible') this.requireAuth();
+      };
+      document.addEventListener('visibilitychange', onVisible);
+      const timer = setInterval(() => this.requireAuth(), intervalMs);
+      return () => {
+        clearInterval(timer);
+        document.removeEventListener('visibilitychange', onVisible);
+      };
     },
     async completeLoginRedirect() {
       const params = new URLSearchParams(location.search);
