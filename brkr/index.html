@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reflex Angles Worksheet</title>
+  <style>
+    html,body{margin:0;height:100%;background:#0b1220;color:#e2e8f0;font-family:Arial,Helvetica,sans-serif;}
+    .wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;gap:12px;padding:16px;box-sizing:border-box;}
+    h1{margin:0;font-size:1.3rem;color:#f59e0b;}
+    .hud{display:flex;gap:24px;font-size:1rem;}
+    canvas{background:#04111d;border:2px solid #1f3a52;border-radius:12px;box-shadow:0 12px 35px rgba(0,0,0,.5);touch-action:none;}
+    .hint{font-size:.8rem;color:#94a3b8;}
+    button{padding:10px 18px;border:0;border-radius:999px;background:#f59e0b;color:#04111d;font-weight:700;cursor:pointer;}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Reflex Angles Worksheet</h1>
+  <div class="hud"><span>Score: <b id="score">0</b></span><span>Lives: <b id="lives">3</b></span></div>
+  <canvas id="c" width="480" height="520"></canvas>
+  <div class="hint">Move mouse or drag &middot; click / tap to launch</div>
+  <button id="restart">Restart</button>
+</div>
+<script>
+const cv=document.getElementById('c'),x=cv.getContext('2d');
+const W=cv.width,H=cv.height;
+const COLORS=['#f87171','#fbbf24','#34d399','#22d3ee','#a78bfa'];
+let paddle,ball,bricks,score,lives,running,won;
+function init(){
+  paddle={w:90,h:12,x:W/2-45,y:H-30};
+  resetBall();
+  bricks=[];
+  const rows=5,cols=8,bw=52,bh=22,pad=6,offX=(W-(cols*(bw+pad)-pad))/2,offY=50;
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)
+    bricks.push({x:offX+c*(bw+pad),y:offY+r*(bh+pad),w:bw,h:bh,alive:true,color:COLORS[r]});
+  score=0;lives=3;won=false;running=false;
+  document.getElementById('score').textContent=0;
+  document.getElementById('lives').textContent=3;
+  draw();
+}
+function resetBall(){ball={x:W/2,y:H-45,dx:0,dy:0,r:8,speed:5};running=false;}
+function launch(){if(!running&&!won&&lives>0){ball.dx=(Math.random()<.5?-1:1)*ball.speed*.6;ball.dy=-ball.speed;running=true;}}
+function step(){
+  if(!running)return;
+  ball.x+=ball.dx;ball.y+=ball.dy;
+  if(ball.x<ball.r||ball.x>W-ball.r)ball.dx*=-1;
+  if(ball.y<ball.r)ball.dy*=-1;
+  if(ball.y>H){lives--;document.getElementById('lives').textContent=lives;
+    if(lives<=0){running=false;}else resetBall();}
+  if(ball.y+ball.r>=paddle.y&&ball.x>paddle.x&&ball.x<paddle.x+paddle.w&&ball.dy>0){
+    const hit=(ball.x-(paddle.x+paddle.w/2))/(paddle.w/2);
+    const ang=hit*Math.PI/3;
+    ball.dx=ball.speed*Math.sin(ang);ball.dy=-ball.speed*Math.cos(ang);
+  }
+  for(const b of bricks){
+    if(!b.alive)continue;
+    if(ball.x>b.x&&ball.x<b.x+b.w&&ball.y-ball.r<b.y+b.h&&ball.y+ball.r>b.y){
+      b.alive=false;ball.dy*=-1;score+=10;
+      document.getElementById('score').textContent=score;break;
+    }
+  }
+  if(bricks.every(b=>!b.alive)){won=true;running=false;}
+}
+function draw(){
+  x.fillStyle='#04111d';x.fillRect(0,0,W,H);
+  for(const b of bricks)if(b.alive){x.fillStyle=b.color;x.fillRect(b.x,b.y,b.w,b.h);
+    x.fillStyle='rgba(255,255,255,.2)';x.fillRect(b.x,b.y,b.w,4);}
+  x.fillStyle='#e2e8f0';x.fillRect(paddle.x,paddle.y,paddle.w,paddle.h);
+  x.fillStyle='#fbbf24';x.beginPath();x.arc(ball.x,ball.y,ball.r,0,7);x.fill();
+  if(!running&&!won&&lives>0){x.fillStyle='#94a3b8';x.font='16px Arial';x.textAlign='center';x.fillText('Click to launch',W/2,H/2);}
+  if(won||lives<=0){x.fillStyle='rgba(4,17,29,.8)';x.fillRect(0,0,W,H);
+    x.fillStyle='#fff';x.font='bold 28px Arial';x.textAlign='center';
+    x.fillText(won?'You Cleared It!':'Game Over',W/2,H/2);}
+}
+function frame(){step();draw();requestAnimationFrame(frame);}
+function movePaddle(cx){const rect=cv.getBoundingClientRect();let p=(cx-rect.left)*(W/rect.width)-paddle.w/2;
+  paddle.x=Math.max(0,Math.min(W-paddle.w,p));}
+cv.addEventListener('mousemove',e=>movePaddle(e.clientX));
+cv.addEventListener('touchmove',e=>{movePaddle(e.touches[0].clientX);e.preventDefault();},{passive:false});
+cv.addEventListener('click',launch);
+cv.addEventListener('touchstart',launch,{passive:true});
+document.getElementById('restart').onclick=init;
+init();frame();
+</script>
+</body>
+</html>

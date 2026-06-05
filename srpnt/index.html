@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Number Sequence Practice</title>
+  <style>
+    html,body{margin:0;height:100%;background:#0b1220;color:#e2e8f0;font-family:Arial,Helvetica,sans-serif;}
+    .wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;gap:14px;padding:16px;box-sizing:border-box;}
+    h1{margin:0;font-size:1.3rem;color:#34d399;}
+    .hud{display:flex;gap:24px;font-size:1rem;}
+    canvas{background:#04111d;border:2px solid #1f3a52;border-radius:12px;box-shadow:0 12px 35px rgba(0,0,0,.5);touch-action:none;}
+    .hint{font-size:.8rem;color:#94a3b8;}
+    button{padding:10px 18px;border:0;border-radius:999px;background:#34d399;color:#04111d;font-weight:700;cursor:pointer;}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Number Sequence Practice</h1>
+  <div class="hud"><span>Score: <b id="score">0</b></span><span>Best: <b id="best">0</b></span></div>
+  <canvas id="c" width="400" height="400"></canvas>
+  <div class="hint">Arrow keys / WASD to move &middot; swipe on touch</div>
+  <button id="restart">New Round</button>
+</div>
+<script>
+const cv=document.getElementById('c'),x=cv.getContext('2d');
+const N=20,S=cv.width/N;
+let snake,dir,nextDir,food,score,best=+(localStorage.getItem('srpnt_best')||0),loop,alive;
+document.getElementById('best').textContent=best;
+function reset(){
+  snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
+  dir={x:1,y:0};nextDir=dir;score=0;alive=true;
+  document.getElementById('score').textContent=0;
+  placeFood();
+  clearInterval(loop);loop=setInterval(tick,110);
+}
+function placeFood(){
+  do{food={x:(Math.random()*N)|0,y:(Math.random()*N)|0};}
+  while(snake.some(s=>s.x===food.x&&s.y===food.y));
+}
+function tick(){
+  dir=nextDir;
+  const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+  if(head.x<0||head.y<0||head.x>=N||head.y>=N||snake.some(s=>s.x===head.x&&s.y===head.y)){
+    alive=false;clearInterval(loop);draw();return;
+  }
+  snake.unshift(head);
+  if(head.x===food.x&&head.y===food.y){
+    score++;document.getElementById('score').textContent=score;
+    if(score>best){best=score;localStorage.setItem('srpnt_best',best);document.getElementById('best').textContent=best;}
+    placeFood();
+  }else snake.pop();
+  draw();
+}
+function draw(){
+  x.fillStyle='#04111d';x.fillRect(0,0,cv.width,cv.height);
+  x.fillStyle='#f87171';x.beginPath();x.arc(food.x*S+S/2,food.y*S+S/2,S/2-2,0,7);x.fill();
+  snake.forEach((s,i)=>{
+    x.fillStyle=i===0?'#6ee7b7':'#34d399';
+    x.fillRect(s.x*S+1,s.y*S+1,S-2,S-2);
+  });
+  if(!alive){
+    x.fillStyle='rgba(4,17,29,.78)';x.fillRect(0,0,cv.width,cv.height);
+    x.fillStyle='#fff';x.font='bold 26px Arial';x.textAlign='center';
+    x.fillText('Round Over',cv.width/2,cv.height/2-8);
+    x.font='15px Arial';x.fillText('Score '+score,cv.width/2,cv.height/2+20);
+  }
+}
+function turn(nx,ny){if(nx!==-dir.x||ny!==-dir.y)nextDir={x:nx,y:ny};}
+addEventListener('keydown',e=>{
+  const k=e.key.toLowerCase();
+  if(k==='arrowup'||k==='w')turn(0,-1);
+  else if(k==='arrowdown'||k==='s')turn(0,1);
+  else if(k==='arrowleft'||k==='a')turn(-1,0);
+  else if(k==='arrowright'||k==='d')turn(1,0);
+  if(['arrowup','arrowdown','arrowleft','arrowright'].includes(k))e.preventDefault();
+});
+let tsx,tsy;
+cv.addEventListener('touchstart',e=>{tsx=e.touches[0].clientX;tsy=e.touches[0].clientY;},{passive:true});
+cv.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-tsx,dy=e.changedTouches[0].clientY-tsy;
+  if(Math.abs(dx)>Math.abs(dy))turn(dx>0?1:-1,0);else turn(0,dy>0?1:-1);
+});
+document.getElementById('restart').onclick=reset;
+reset();
+</script>
+</body>
+</html>

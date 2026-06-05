@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stacking Logic Drill</title>
+  <style>
+    html,body{margin:0;height:100%;background:#0b1220;color:#e2e8f0;font-family:Arial,Helvetica,sans-serif;}
+    .wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;gap:12px;padding:16px;box-sizing:border-box;}
+    h1{margin:0;font-size:1.3rem;color:#60a5fa;}
+    .hud{display:flex;gap:24px;font-size:1rem;}
+    canvas{background:#04111d;border:2px solid #1f3a52;border-radius:12px;box-shadow:0 12px 35px rgba(0,0,0,.5);}
+    .hint{font-size:.8rem;color:#94a3b8;text-align:center;}
+    button{padding:10px 18px;border:0;border-radius:999px;background:#60a5fa;color:#04111d;font-weight:700;cursor:pointer;}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Stacking Logic Drill</h1>
+  <div class="hud"><span>Score: <b id="score">0</b></span><span>Lines: <b id="lines">0</b></span></div>
+  <canvas id="c" width="300" height="600"></canvas>
+  <div class="hint">&larr; &rarr; move &middot; &uarr; rotate &middot; &darr; soft drop &middot; space hard drop</div>
+  <button id="restart">Restart</button>
+</div>
+<script>
+const cv=document.getElementById('c'),x=cv.getContext('2d');
+const COLS=10,ROWS=20,S=30;
+const COLORS=['#000','#22d3ee','#3b82f6','#f59e0b','#fbbf24','#34d399','#a78bfa','#f87171'];
+const SHAPES=[[],
+ [[1,1,1,1]],
+ [[2,0,0],[2,2,2]],
+ [[0,0,3],[3,3,3]],
+ [[4,4],[4,4]],
+ [[0,5,5],[5,5,0]],
+ [[0,6,0],[6,6,6]],
+ [[7,7,0],[0,7,7]]];
+let grid,cur,px,py,score,lines,gameOver,drop,lastTime,acc;
+function newGrid(){return Array.from({length:ROWS},()=>Array(COLS).fill(0));}
+function rand(){return JSON.parse(JSON.stringify(SHAPES[1+(Math.random()*7|0)]));}
+function spawn(){cur=rand();px=(COLS/2|0)-(cur[0].length/2|0);py=0;if(collide(0,0,cur))gameOver=true;}
+function collide(dx,dy,shape){
+  for(let r=0;r<shape.length;r++)for(let c=0;c<shape[r].length;c++){
+    if(!shape[r][c])continue;
+    const nx=px+c+dx,ny=py+r+dy;
+    if(nx<0||nx>=COLS||ny>=ROWS)return true;
+    if(ny>=0&&grid[ny][nx])return true;
+  }return false;
+}
+function merge(){for(let r=0;r<cur.length;r++)for(let c=0;c<cur[r].length;c++)if(cur[r][c]&&py+r>=0)grid[py+r][px+c]=cur[r][c];}
+function clearLines(){
+  let cleared=0;
+  for(let r=ROWS-1;r>=0;r--){
+    if(grid[r].every(v=>v)){grid.splice(r,1);grid.unshift(Array(COLS).fill(0));cleared++;r++;}
+  }
+  if(cleared){lines+=cleared;score+=[0,100,300,500,800][cleared];
+    document.getElementById('lines').textContent=lines;
+    document.getElementById('score').textContent=score;}
+}
+function rotate(){
+  const s=cur,nr=s[0].length,nc=s.length;
+  const n=Array.from({length:nr},()=>Array(nc).fill(0));
+  for(let r=0;r<s.length;r++)for(let c=0;c<s[r].length;c++)n[c][s.length-1-r]=s[r][c];
+  const old=cur;cur=n;if(collide(0,0,cur))cur=old;
+}
+function step(){if(!collide(0,1,cur))py++;else{merge();clearLines();spawn();}}
+function hardDrop(){while(!collide(0,1,cur))py++;step();}
+function draw(){
+  x.fillStyle='#04111d';x.fillRect(0,0,cv.width,cv.height);
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(grid[r][c])cell(c,r,grid[r][c]);
+  if(!gameOver)for(let r=0;r<cur.length;r++)for(let c=0;c<cur[r].length;c++)if(cur[r][c])cell(px+c,py+r,cur[r][c]);
+  if(gameOver){
+    x.fillStyle='rgba(4,17,29,.8)';x.fillRect(0,0,cv.width,cv.height);
+    x.fillStyle='#fff';x.font='bold 26px Arial';x.textAlign='center';
+    x.fillText('Game Over',cv.width/2,cv.height/2);
+  }
+}
+function cell(c,r,v){
+  x.fillStyle=COLORS[v];x.fillRect(c*S+1,r*S+1,S-2,S-2);
+  x.fillStyle='rgba(255,255,255,.18)';x.fillRect(c*S+1,r*S+1,S-2,5);
+}
+function reset(){grid=newGrid();score=0;lines=0;gameOver=false;acc=0;lastTime=0;
+  document.getElementById('score').textContent=0;document.getElementById('lines').textContent=0;
+  spawn();requestAnimationFrame(frame);}
+function frame(t){
+  if(lastTime)acc+=t-lastTime;lastTime=t;
+  const speed=Math.max(120,600-lines*20);
+  if(acc>speed&&!gameOver){step();acc=0;}
+  draw();
+  if(!gameOver)requestAnimationFrame(frame);
+}
+addEventListener('keydown',e=>{
+  if(gameOver)return;
+  if(e.key==='ArrowLeft'){if(!collide(-1,0,cur))px--;}
+  else if(e.key==='ArrowRight'){if(!collide(1,0,cur))px++;}
+  else if(e.key==='ArrowDown'){step();}
+  else if(e.key==='ArrowUp'){rotate();}
+  else if(e.key===' '){hardDrop();}
+  if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(e.key)){e.preventDefault();draw();}
+});
+document.getElementById('restart').onclick=reset;
+reset();
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Recall Exercise</title>
+  <style>
+    html,body{margin:0;min-height:100%;background:#0b1220;color:#e2e8f0;font-family:Arial,Helvetica,sans-serif;}
+    .wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:14px;padding:16px;box-sizing:border-box;}
+    h1{margin:0;font-size:1.3rem;color:#a78bfa;}
+    .hud{display:flex;gap:24px;font-size:1rem;}
+    .board{display:grid;grid-template-columns:repeat(4,80px);gap:10px;}
+    .card{width:80px;height:80px;border-radius:12px;cursor:pointer;perspective:600px;}
+    .inner{position:relative;width:100%;height:100%;transition:transform .35s;transform-style:preserve-3d;}
+    .card.flip .inner{transform:rotateY(180deg);}
+    .face{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:12px;backface-visibility:hidden;font-size:2rem;}
+    .front{background:#1f3a52;}
+    .back{background:#a78bfa;color:#0b1220;transform:rotateY(180deg);}
+    .card.done .back{background:#34d399;}
+    button{padding:10px 18px;border:0;border-radius:999px;background:#a78bfa;color:#0b1220;font-weight:700;cursor:pointer;}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Memory Recall Exercise</h1>
+  <div class="hud"><span>Moves: <b id="moves">0</b></span><span>Pairs: <b id="pairs">0</b>/8</span></div>
+  <div class="board" id="board"></div>
+  <button id="restart">New Game</button>
+</div>
+<script>
+const EMOJI=['🍎','🚀','🎵','⚽','🌟','🐢','🎲','🔑'];
+const board=document.getElementById('board');
+let first,lock,moves,pairs;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
+function init(){
+  moves=0;pairs=0;first=null;lock=false;
+  document.getElementById('moves').textContent=0;
+  document.getElementById('pairs').textContent=0;
+  board.innerHTML='';
+  shuffle([...EMOJI,...EMOJI]).forEach(sym=>{
+    const card=document.createElement('div');card.className='card';
+    card.innerHTML=`<div class="inner"><div class="face front">?</div><div class="face back">${sym}</div></div>`;
+    card.dataset.sym=sym;
+    card.onclick=()=>flip(card);
+    board.appendChild(card);
+  });
+}
+function flip(card){
+  if(lock||card.classList.contains('flip')||card.classList.contains('done'))return;
+  card.classList.add('flip');
+  if(!first){first=card;return;}
+  moves++;document.getElementById('moves').textContent=moves;
+  if(first.dataset.sym===card.dataset.sym){
+    first.classList.add('done');card.classList.add('done');
+    first=null;pairs++;document.getElementById('pairs').textContent=pairs;
+    if(pairs===8)setTimeout(()=>alert('Completed in '+moves+' moves!'),300);
+  }else{
+    lock=true;const a=first,b=card;first=null;
+    setTimeout(()=>{a.classList.remove('flip');b.classList.remove('flip');lock=false;},700);
+  }
+}
+document.getElementById('restart').onclick=init;
+init();
+</script>
+</body>
+</html>
