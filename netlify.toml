@@ -1,0 +1,14 @@
+[build]
+  publish = "."
+  command = "bash scripts/fetch-webxash.sh"
+
+[[headers]]
+  for = "/cs16/engine/*.wasm"
+  [headers.values]
+    Content-Type = "application/wasm"
+
+[[headers]]
+  for = "/cs16/engine/*"
+  [headers.values]
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Embedder-Policy = "require-corp"
