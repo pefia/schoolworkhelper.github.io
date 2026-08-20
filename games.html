@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homework Hub - Cranmore VLE</title>
     <link rel="icon" type="image/png" href="image-removebg-preview.png">
+    <script src="/cloak.js"></script>
     <!-- External CSS styles -->
     <link rel="stylesheet" href="styles.css">
     <script>
@@ -19,6 +20,7 @@
             --text: #e2e8f0;
             --muted: #94a3b8;
             --accent: #60a5fa;
+            --accent-strong: #2563eb;
         }
 
         * { box-sizing: border-box; }
@@ -53,9 +55,11 @@
             box-shadow: 0 12px 35px rgba(2, 8, 23, 0.4);
         }
 
-        header { text-align: center; margin-bottom: 1rem; }
-        header img { width: 148px; height: 148px; }
-        header h3 { font-size: 1rem; margin-top: 0.7rem; color: #cbd5e1; }
+        header { display:flex;align-items:center;gap:1rem;text-align:left;margin-bottom:1rem;padding:1.1rem 1.25rem; }
+        header img { width: 82px; height: 82px; }
+        header h1 { margin:0;font-size:clamp(1.5rem,4vw,2.35rem);letter-spacing:-.04em; }
+        header h3 { font-size:.9rem;margin:.35rem 0 0;color:#cbd5e1;font-weight:500; }
+        .status-pill{margin-left:auto;padding:.45rem .7rem;border:1px solid rgba(74,222,128,.35);border-radius:999px;background:rgba(34,197,94,.12);color:#86efac;font-size:.75rem;font-weight:800;white-space:nowrap}
 
         .login-section, .privacy-section, .contact-section, .view-counter-section, .homework-section, .due-tasks-section {
             padding: 1rem 1.1rem;
@@ -69,6 +73,7 @@
         }
 
         .task-card {
+            position:relative;
             border-radius: 14px;
             overflow: hidden;
             aspect-ratio: 1 / 1;
@@ -78,6 +83,13 @@
         }
         .task-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 12px 30px rgba(30,64,175,.4); }
         .task-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .task-card span{position:absolute;inset:auto 0 0;padding:1.5rem .65rem .55rem;background:linear-gradient(transparent,rgba(2,6,23,.96));color:white;font-size:.77rem;font-weight:800;text-align:left;letter-spacing:.01em}
+
+        .toolbar{display:flex;gap:.7rem;align-items:center;padding:.8rem;margin-bottom:1rem;position:sticky;top:.6rem;z-index:4}
+        .search{flex:1;min-width:0;border:1px solid var(--stroke);border-radius:12px;background:rgba(2,6,23,.7);color:white;padding:.8rem 1rem;font:inherit;outline:none}.search:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(96,165,250,.15)}
+        .cloak-button{border:0;border-radius:12px;padding:.8rem 1rem;background:linear-gradient(135deg,var(--accent-strong),#7c3aed);color:white;font-weight:800;cursor:pointer;white-space:nowrap}
+        .section-heading{display:flex;align-items:end;justify-content:space-between;margin-bottom:.8rem}.section-heading h1{margin:0}.section-heading p{margin:0;color:var(--muted);font-size:.8rem}
+        .empty{display:none;color:var(--muted);text-align:center;padding:2rem}
 
         .button, .contactbutton {
             border-radius: 999px; padding: 10px 15px; border: 1px solid var(--stroke);
@@ -96,6 +108,7 @@
             0% { background-color: #ff4242; } 20% { background-color: #ffa500; } 40% { background-color: #ffea00; }
             60% { background-color: #29a329; } 80% { background-color: #3f51b5; } 100% { background-color: #9c27b0; }
         }
+        @media(max-width:600px){header{align-items:flex-start}.status-pill{display:none}.toolbar{top:.25rem}.cloak-button{font-size:0}.cloak-button::after{content:'Cloak';font-size:.85rem}}
     </style>
 </head>
 <body>
@@ -104,12 +117,17 @@
     <script src="https://cdn.auth0.com/js/auth0-spa-js/2.18/auth0-spa-js.production.js"></script>
     <script src="/auth.js"></script>
     <script>(async () => { await Auth.requireAuth(); Auth.startSessionGuard(); })();</script>
-    <header>
-        <center> <img src="favicon.png" alt="VLE Logo" width="200" height="200"> </center>
-        <h3 id="welcome">-~- Homework dashboard for planning, tracking, and opening class tasks quickly. -~-</h3>
+    <header class="panel">
+        <img src="favicon.png" alt="VLE Logo">
+        <div><h1>Homework Hub</h1><h3 id="welcome">Your games, all in one place.</h3></div>
+        <span class="status-pill">● Online</span>
     </header>
 
     <main>
+        <nav class="toolbar panel" aria-label="Game controls">
+            <input class="search" id="gameSearch" type="search" placeholder="Search games…" aria-label="Search games">
+            <button class="cloak-button" id="cloakButton" type="button">Open in about:blank</button>
+        </nav>
         <section class="login-section panel">
             <center>
                 <input type="text" name="username" class="input navbar-control" placeholder="Enter fake title" value="Formative" id="title">
@@ -128,9 +146,10 @@
         </section>
 
         <section class="homework-section panel">
-            <h1>Homework Tasks (21)</h1>
+            <div class="section-heading"><h1>Game Library</h1><p>22 games</p></div>
             <div class="task-grid">
-                <a class="task-card" href="twenT48/index.html"><img src="twenT48/icon.png"></a>
+                <a class="task-card" href="cs16/index.html" data-name="counter strike cs 1.6 webxash"><img src="cs16/icon.svg" alt=""><span>Counter-Strike 1.6</span></a>
+                <a class="task-card" href="twenT48/index.html"><img src="twenT48/icon.png" alt="2048"><span>2048</span></a>
                 <a class="task-card" href="hxtrs/index.html"><img src="hxtrs/icon.png"></a>
                 <a class="task-card" href="rdsrd/index.html"><img src="rdsrd/icon.png"></a>
                 <a class="task-card" href="polytrack/index.html"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQL9OEod1DF5z0dE45V1rtBLlpjUQWUNjGzYg&s"></a>
@@ -154,6 +173,7 @@
                 <a class="task-card" href="poker/index.html"><img src="poker/icon.svg"></a>
                 <a class="task-card" href="blackjack/index.html"><img src="blackjack/icon.svg"></a>
             </div>
+            <p class="empty" id="emptyState">No games match that search.</p>
         </section>
 
         <section class="due-tasks-section panel">
@@ -222,6 +242,47 @@
 
         // Add click event listener to lock icon
         document.getElementById('lockIcon').addEventListener('click', toggleRainbowBackground);
+
+        document.getElementById('cloakButton').addEventListener('click', function () {
+            if (!window.Cloak.launch()) {
+                this.textContent = 'Pop-up blocked — allow and retry';
+            }
+        });
+
+        const gameNames = {
+            hxtrs:'Hextris', rdsrd:'Radius Raid', polytrack:'PolyTrack', infmar:'Infinite Mario',
+            twdf:'Tower Defense', typr:'Typing Game', f1:'Formula One', wlfjs:'Wolfenstein 3D',
+            tptptp:'Tap Tap Tap', stckmnhk:'Stickman Hook', flpybrd:'Flappy Bird', chrdno:'Chrome Dino',
+            stck:'Stack', wdl:'Wordle', rlyvtx:'Rolly Vortex', tnyfsh:'Tiny Fishing', egycr:'Eggy Car',
+            adventure:'Adventure', poker:'Poker', blackjack:'Blackjack', subsurf:'Subway Surfers', dm:'Doom',
+            crsyrd:'Crossy Road', cbfld:'Cubefield', rtbwl:'Retro Bowl', trts:'Tetris', chtwntftet:'Getaway Shootout'
+        };
+        const cards = Array.from(document.querySelectorAll('.task-card'));
+        cards.forEach(function (card) {
+            if (!card.dataset.name) {
+                const folder = card.getAttribute('href').split('/')[0];
+                card.dataset.name = gameNames[folder] || folder;
+            }
+            if (!card.querySelector('span')) {
+                const label = document.createElement('span');
+                label.textContent = card.dataset.name;
+                card.appendChild(label);
+            }
+            const image = card.querySelector('img');
+            if (!image.alt) image.alt = '';
+        });
+        const search = document.getElementById('gameSearch');
+        search.addEventListener('input', function () {
+            const query = this.value.trim().toLowerCase();
+            let matches = 0;
+            cards.forEach(function (card) {
+                const name = card.dataset.name.toLowerCase();
+                const visible = name.includes(query);
+                card.hidden = !visible;
+                if (visible) matches += 1;
+            });
+            document.getElementById('emptyState').style.display = matches ? 'none' : 'block';
+        });
 
         // Function to handle Alt + Shift key press
         function handleKeyPress(event) {
