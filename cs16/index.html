@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Counter-Strike 1.6</title>
   <link rel="icon" href="icon.svg">
-  <script src="/cloak.js"></script>
   <style>
     :root{color-scheme:dark;--gold:#e8b84c;--panel:#111827;--muted:#aab4c5}
     *{box-sizing:border-box}html,body{height:100%;margin:0;background:#05070b;color:#f8fafc;font-family:Inter,Segoe UI,sans-serif}
@@ -33,7 +32,17 @@
       installButton.disabled = true;
       installButton.textContent = 'Saving…';
       try {
-        await navigator.serviceWorker.ready;
+        const registration = await navigator.serviceWorker.ready;
+        const worker = registration.active;
+        if (!worker) throw new Error('The offline worker is not active');
+        await new Promise((resolve, reject) => {
+          const channel = new MessageChannel();
+          channel.port1.onmessage = ({ data }) => {
+            if (data && data.ok) resolve();
+            else reject(new Error(data && data.error ? data.error : 'Offline save failed'));
+          };
+          worker.postMessage({ type: 'CACHE_OFFLINE_ASSETS' }, [channel.port2]);
+        });
         if (navigator.storage && navigator.storage.persist) await navigator.storage.persist();
         installButton.textContent = 'Saved offline';
       } catch (error) {
